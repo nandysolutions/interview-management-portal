@@ -6,8 +6,8 @@
 
 ### Tools used:
 
-- Python 2.7
-- Django 1.11
+- Python 3.9
+- Django 4
 - Bootstrap 3.7
 
 ### 3rd party modules needed:
@@ -45,5 +45,3 @@
   - Auto send Rating Sheet to a selected Users (e.g may be HR).
   - If a Interview is being created for user , check if previous interview for candidate was closed. 
 
-  ### To-Dos:
-  - Migrate to Python 3
