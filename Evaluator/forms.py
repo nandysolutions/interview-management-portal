@@ -4,7 +4,6 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.admin.widgets import AdminDateWidget, AdminTimeWidget
-from django.utils.translation import ugettext_lazy as _
 
 from . import models
 
@@ -99,7 +98,7 @@ class AddCandidateForm(forms.ModelForm):
         model = models.Candidate
         fields = ['name', 'experience', 'position_applied', 'contact_primary', 'vendor', 'skill']
         labels = {
-        "contact_primary": _("Contact No:"),
+        "contact_primary": "Contact No:",
 
         }
 

@@ -5,7 +5,7 @@ from django.contrib import admin
 
 # Register your models here.
 from django.contrib import admin
-from simple_history.admin import SimpleHistoryAdmin
+# from simple_history.admin import SimpleHistoryAdmin
 
 from .models import Candidate
 from .models import Position
@@ -48,15 +48,15 @@ class RoundInline(admin.TabularInline):
     model = Round
     extra = 0
 
-class InterviewAdmin(SimpleHistoryAdmin):
-    model = Interview
-    list_display = ('__str__', 'candidate','date', 'position', 'status', 'result')
-    search_fields = ['candidate__name']
-    list_editable = ['status', 'result']
-    list_filter = ['status', 'result']
-    history_list_display = ["status", "result"]
+# class InterviewAdmin(SimpleHistoryAdmin):
+#     model = Interview
+#     list_display = ('__str__', 'candidate','date', 'position', 'status', 'result')
+#     search_fields = ['candidate__name']
+#     list_editable = ['status', 'result']
+#     list_filter = ['status', 'result']
+#     history_list_display = ["status", "result"]
 
-    inlines = [RoundInline]
+#     inlines = [RoundInline]
 
 class AspectInline(admin.TabularInline):
     model = Aspect
@@ -115,7 +115,7 @@ class JobOpeningAdmin(admin.ModelAdmin):
 admin.site.register(Vendor, VendorAdmin)
 admin.site.register(Candidate, CandidateAdmin)
 admin.site.register(Position, PositionAdmin)
-admin.site.register(Interview, InterviewAdmin)
+# admin.site.register(Interview, InterviewAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Skill)
 admin.site.register(JobOpening, JobOpeningAdmin)

@@ -1,8 +1,8 @@
-from view_candidate import *
-from view_exam import *
-from view_interview import *
-from view_others import *
-from view_QA import *
-from view_user import *
-from view_openings import *
+from Evaluator.views.view_candidate import *
+from Evaluator.views.view_interview import *
+from Evaluator.views.view_exam import *
+from Evaluator.views.view_others import *
+from Evaluator.views.view_QA import *
+from Evaluator.views.view_user import *
+from Evaluator.views.view_openings import *
 

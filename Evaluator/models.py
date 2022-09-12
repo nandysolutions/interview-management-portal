@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import RegexValidator
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.shortcuts import redirect
 from django.utils import timezone
-from simple_history.models import HistoricalRecords
-from django.core.urlresolvers import reverse
+# from simple_history.models import HistoricalRecords
+from django.urls import reverse
 from django.db.models import Sum, Count
 from django.db.models.functions import TruncMonth
 
@@ -29,7 +28,7 @@ class RatingSheet(models.Model):
 class Aspect(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, default='')
-    rating_sheet = models.ForeignKey(RatingSheet)
+    rating_sheet = models.ForeignKey(RatingSheet, on_delete=models.CASCADE)
     expected_rate = models.PositiveIntegerField(default=1)
 
     def __str__(self):  # __unicode__ on Python 2
@@ -43,7 +42,7 @@ class Position(models.Model):
     exp_needed = models.PositiveIntegerField(default=0)
     technology = models.TextField(default='')
     location = models.CharField(max_length=100, default='Pune')
-    rating_sheet = models.ForeignKey(RatingSheet, null=True)
+    rating_sheet = models.ForeignKey(RatingSheet, null=True,on_delete=models.CASCADE)
     type_choices = (
         ('P', 'Permanent'),
         ('T', 'Temporary'),
@@ -95,8 +94,8 @@ class Candidate(models.Model):
     contact_validator = RegexValidator(regex='\d+')
     contact_primary = models.CharField(max_length=20, validators=[contact_validator], null=True)
     experience = models.PositiveIntegerField()
-    position_applied = models.ForeignKey(Position)
-    vendor = models.ForeignKey(Vendor, null=True)
+    position_applied = models.ForeignKey(Position,on_delete=models.CASCADE)
+    vendor = models.ForeignKey(Vendor, null=True,on_delete=models.CASCADE)
     skill = models.ManyToManyField(Skill, blank=True)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
 
@@ -121,11 +120,11 @@ class QuestionSet(models.Model):
 
 
 class Interview(models.Model):
-    candidate = models.ForeignKey(Candidate)
+    candidate = models.ForeignKey(Candidate,on_delete=models.CASCADE)
     date = models.DateField()
-    position = models.ForeignKey(Position)
-    question_set = models.ForeignKey(QuestionSet, null=True, blank=True)
-    history = HistoricalRecords()
+    position = models.ForeignKey(Position,on_delete=models.CASCADE)
+    question_set = models.ForeignKey(QuestionSet, null=True, blank=True,on_delete=models.CASCADE)
+    # history = HistoricalRecords()
     status_choices = (
         ('AC', 'Active'),
         ('CN', 'Cancelled'),
@@ -189,8 +188,8 @@ class Round(models.Model):
     name = models.CharField(max_length=100)
     date = models.DateField()
     contact_time = models.TimeField(default=timezone.now)
-    assignee = models.ForeignKey(User)
-    interview = models.ForeignKey(Interview)
+    assignee = models.ForeignKey(User,on_delete=models.CASCADE)
+    interview = models.ForeignKey(Interview,on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     modified_on = models.DateTimeField(default=timezone.now, editable=False)
     comments = models.CharField(max_length=300, default='', null=True, blank=True)
@@ -258,7 +257,7 @@ class Question(models.Model):
         default='M'
                     )
 
-    skill = models.ForeignKey(Skill, null=True)
+    skill = models.ForeignKey(Skill, null=True,on_delete=models.CASCADE)
     qset = models.ManyToManyField(QuestionSet)
 
     def __str__(self):  # __unicode__ on Python 2
@@ -273,7 +272,7 @@ class Answer(models.Model):
     Answer's Model, which is used as the answer in Question Model
     """
     detail = models.CharField(max_length=128, verbose_name=u'Answer\'s text')
-    question = models.ForeignKey(Question, null=True)
+    question = models.ForeignKey(Question, null=True,on_delete=models.CASCADE)
     correct = models.BooleanField('Correct', default=True)
 
     def __str__(self):
@@ -281,8 +280,8 @@ class Answer(models.Model):
 
 class InterviewRatingSheet(models.Model):
     name = models.CharField(max_length=200, default='MySheet')
-    interview = models.ForeignKey(Interview, null=True)
-    round_name = models.OneToOneField(Round, null=True)
+    interview = models.ForeignKey(Interview, null=True,on_delete=models.CASCADE)
+    round_name = models.OneToOneField(Round, null=True,on_delete=models.CASCADE)
     comment = models.TextField(default='', null=True)
 
 
@@ -292,7 +291,7 @@ class InterviewRatingSheet(models.Model):
 class RatingAspect(models.Model):
     name = models.CharField(max_length=100)
     comment = models.TextField(null=True, default='', blank=True)
-    interview_rating_sheet = models.ForeignKey(InterviewRatingSheet)
+    interview_rating_sheet = models.ForeignKey(InterviewRatingSheet,on_delete=models.CASCADE)
     points = models.PositiveIntegerField(default=0)
     expected_points = models.PositiveIntegerField(default=0)
 
@@ -300,7 +299,7 @@ class RatingAspect(models.Model):
         return self.name
 
 class JobOpening(models.Model):
-    position = models.ForeignKey(Position)
+    position = models.ForeignKey(Position,on_delete=models.CASCADE)
     no_of_openings = models.PositiveIntegerField(default=1)
     posted_on = models.DateTimeField(default=timezone.now, editable=False)
 
@@ -310,7 +309,7 @@ class JobOpening(models.Model):
 class Document(models.Model):
     document = models.FileField(upload_to='resumes/')
     upload_to = models.DateTimeField(auto_now_add=True)
-    candidate = models.OneToOneField(Candidate)
+    candidate = models.OneToOneField(Candidate,on_delete=models.CASCADE)
 
     def __str__(self):
         return 'Resume_{}'.format(self.candidate.name)
